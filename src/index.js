@@ -1,51 +1,68 @@
-document.addEventListener("DOMContentLoaded", function() {
-    // Challenge 1
-    const imgUrl = "https://dog.ceo/api/breeds/image/random/4";
-    fetch(imgUrl)
-        .then(response => response.json())
-        .then(data => {
-            const dogImageContainer = document.getElementById('dog-image-container');
-            data.message.forEach(imageUrl => {
-                const img = document.createElement('img');
-                img.src = imageUrl;
-                dogImageContainer.appendChild(img);
-            });
-        })
-        .catch(error => console.error('Error fetching dog images:', error));
+console.log('%c HI', 'color: firebrick')
+const imgUrl = "https://dog.ceo/api/breeds/image/random/4";
+const breedUrl = "https://dog.ceo/api/breeds/list/all";
+let images = document.querySelector("#dog-image-container");
+const breedContainer = document.getElementById("dog-breeds");
+const dropDown = document.getElementById("breed-dropdown");
+const option = document.querySelectorAll("option")
 
-    // Challenge 2
-    const breedUrl = "https://dog.ceo/api/breeds/list/all";
-    fetch(breedUrl)
-        .then(response => response.json())
-        .then(data => {
-            const breedsUl = document.getElementById('dog-breeds');
-            for (const breed in data.message) {
-                const li = document.createElement('li');
-                li.textContent = breed;
-                breedsUl.appendChild(li);
-            }
-        })
-        .catch(error => console.error('Error fetching dog breeds:', error));
+function challenge1() {
+    document.addEventListener("DOMContentLoaded", () => {
+        fetch(imgUrl)
+            .then(res => res.json())
+            .then(function (imgs) {
+                imgs.message.forEach(img => {
+                    let imgg = document.createElement("img");
+                    imgg.append(img);
+                    images.appendChild(imgg)
+                });
+            })
+    })
+}
+function challenge2() {
+    document.addEventListener("DOMContentLoaded", () => {
+        fetch(breedUrl)
+            .then(res => res.json())
+            .then(data => {
+                const breeds = data.message
+                Object.keys(breeds).forEach((breed) => {
+                    const li = document.createElement("li");
+                    breedContainer.appendChild(li);
+                    li.textContent = breed;
+                    li.addEventListener("click", () => {
+                        li.style.color = "green"
+                    })
+                   
+                })
+               
+                dropDown.addEventListener("change", (event)=>{
+                    const selectedLetter = event.target.value;
+                    const filterdBreeds = Object.keys(breeds).filter((e)=> e.startsWith(selectedLetter));
+            displayBreeds(filterdBreeds);
+                    
+                   
+               
+                });
+                  
+              
+            })
+    })
+}
 
-    // Challenge 3
-    const breedsUl = document.getElementById('dog-breeds');
-    breedsUl.addEventListener('click', function(event) {
-        if (event.target.tagName === 'LI') {
-            event.target.style.color = 'blue'; // Change the color to your desired color
-        }
+function displayBreeds(breedsToDisplay) {
+    breedContainer.innerHTML = ''; 
+    
+    breedsToDisplay.forEach((breed) => {
+        const li = document.createElement("li");
+        li.textContent = breed;
+        li.addEventListener("click", () => {
+            li.style.color = "green";
+        });
+        breedContainer.appendChild(li);
     });
+}
 
-    // Challenge 4
-    const filterDropdown = document.getElementById('breed-dropdown');
-    filterDropdown.addEventListener('change', function(event) {
-        const selectedLetter = event.target.value.toLowerCase();
-        const breedList = breedsUl.getElementsByTagName('li');
-        for (const breed of breedList) {
-            if (breed.textContent.toLowerCase().startsWith(selectedLetter)) {
-                breed.style.display = 'list-item';
-            } else {
-                breed.style.display = 'none';
-            }
-        }
-    });
-});
+challenge1();
+challenge2();
+//challenge 3 complete
+// challenge 4 complete.
